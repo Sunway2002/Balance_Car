@@ -74,10 +74,6 @@ void Error_Handler(void);
 #define AIN1_GPIO_Port GPIOB
 #define AIN2_Pin GPIO_PIN_15
 #define AIN2_GPIO_Port GPIOB
-#define SCL_Pin GPIO_PIN_8
-#define SCL_GPIO_Port GPIOB
-#define SDA_Pin GPIO_PIN_9
-#define SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
