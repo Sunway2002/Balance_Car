@@ -25,7 +25,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdlib.h"
+#include "motor.h"
+#include "MPU.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,6 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+
 
 /* USER CODE END PV */
 
@@ -66,7 +69,9 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	short *gx = (short*)malloc(sizeof(short));
+	short *gy = (short*)malloc(sizeof(short));
+	short *gz = (short*)malloc(sizeof(short));
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -87,9 +92,11 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_I2C1_Init();
+  MX_I2C1_Init();  
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+	Set_Motor_Speed(500,Right);
+	MPU_Init();
 
   /* USER CODE END 2 */
 
@@ -97,8 +104,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		/*MPU_Get_Gyroscope(gx,gy,gz);*/
+		
+		
+		/*HAL_GPIO_WritePin(GPIOB, AIN1_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOB, AIN2_Pin, GPIO_PIN_SET);*/
+		
     /* USER CODE END WHILE */
 
+		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
