@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_it.h"
+#include "stdlib.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -42,7 +43,12 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+uint8_t message[200] = {0}; //接收字符串缓冲区
+uint8_t offset; //接收字符串缓冲区的下标及大小
+uint8_t mesg; //用于中断时，接收单个字符
+uint8_t RX_Flag; //发生中断的标志
+int rocker_x;
+int rocker_y;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -56,7 +62,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern UART_HandleTypeDef huart3;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -199,7 +205,45 @@ void SysTick_Handler(void)
 /* please refer to the startup file (startup_stm32f1xx.s).                    */
 /******************************************************************************/
 
+/**
+  * @brief This function handles USART3 global interrupt.
+  */
+void USART3_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART3_IRQn 0 */
+
+  /* USER CODE END USART3_IRQn 0 */
+  HAL_UART_IRQHandler(&huart3);
+  /* USER CODE BEGIN USART3_IRQn 1 */
+
+	//将接收到的单个字符扔到自定义字符串缓冲中，形成字符串
+	message[offset++] = mesg; 
+	if(mesg==0x0A){
+		if(message[0]>='a'&&message[0]<='g'){
+			
+		}
+		else if(message[0]=='x'){
+			uint8_t* str=message;
+			str=message+sizeof(uint8_t);
+			message[offset-1]='\0';
+			rocker_x=atoi(str);		
+		}
+		else if(message[0]=='y'){
+			uint8_t* str=message;
+			str=message+sizeof(uint8_t);
+			message[offset-1]='\0';
+			rocker_y=atoi(str);		
+		}
+		offset=0;
+	}
+	RX_Flag = 1;
+
+	//实现多次数据返回
+	HAL_UART_Receive_IT(&huart3, (uint8_t *)&mesg, 1);
+	
+  /* USER CODE END USART3_IRQn 1 */
+}
+
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
