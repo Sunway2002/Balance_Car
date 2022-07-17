@@ -78,8 +78,10 @@ int main(void)
 	short *gx = (short*)malloc(sizeof(short));
 	short *gy = (short*)malloc(sizeof(short));
 	short *gz = (short*)malloc(sizeof(short));
+	short *ax = (short*)malloc(sizeof(short));
+	short *ay = (short*)malloc(sizeof(short));
+	short *az = (short*)malloc(sizeof(short));
   /* USER CODE END 1 */
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -111,8 +113,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		/*MPU_Get_Gyroscope(gx,gy,gz);*/
-		
+		MPU_Get_Gyroscope(gx,gy,gz);
+		*gx=*gx*2000.0/32768.0;
+		*gy=*gy*2000.0/32768.0;
+		*gz=*gz*2000.0/32768.0;
+		MPU_Get_Accelerometer(ax,ay,az);
 		
 		/*HAL_GPIO_WritePin(GPIOB, AIN1_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOB, AIN2_Pin, GPIO_PIN_SET);*/
