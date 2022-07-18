@@ -3,10 +3,13 @@
 
 #define Left 0
 #define Right 1
+#define Forward 2
+#define Backward 3
 
 #include "tim.h"
 #include "main.h"
 
-void Set_Motor_Speed(uint16_t speed, int side);
+void Direction(int direction, int side);
+void Set_Motor_Speed(int speed, int side);
 #endif
 
