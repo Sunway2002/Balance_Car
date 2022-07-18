@@ -3,6 +3,7 @@
 "balance_car\motor.o"
 "balance_car\mpu.o"
 "balance_car\screen.o"
+"balance_car\dmp.o"
 "balance_car\main.o"
 "balance_car\gpio.o"
 "balance_car\i2c.o"

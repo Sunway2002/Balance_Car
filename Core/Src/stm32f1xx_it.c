@@ -21,7 +21,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_it.h"
-#include "stdlib.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -49,6 +48,7 @@ uint8_t mesg; //用于中断时，接收单个字符
 uint8_t RX_Flag; //发生中断的标志
 int rocker_x;
 int rocker_y;
+int count=0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -62,6 +62,7 @@ int rocker_y;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern TIM_HandleTypeDef htim3;
 extern UART_HandleTypeDef huart3;
 /* USER CODE BEGIN EV */
 
@@ -194,7 +195,12 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
-
+	if(count>5){
+	GetMpuData();
+	AngleCalculate();
+	count=0;
+	}
+	count++;
   /* USER CODE END SysTick_IRQn 1 */
 }
 
@@ -204,6 +210,22 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f1xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles TIM3 global interrupt.
+  */
+void TIM3_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM3_IRQn 0 */
+
+  /* USER CODE END TIM3_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim3);
+  /* USER CODE BEGIN TIM3_IRQn 1 */
+	GetMpuData();
+	AngleCalculate();
+	count++;
+  /* USER CODE END TIM3_IRQn 1 */
+}
 
 /**
   * @brief This function handles USART3 global interrupt.
