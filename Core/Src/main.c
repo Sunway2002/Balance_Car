@@ -29,6 +29,7 @@
 #include "stdlib.h"
 #include "motor.h"
 #include "MPU.h"
+#include "pid.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,6 +55,8 @@ extern uint8_t mesg; //用于中断时，接收单个字符
 extern uint8_t RX_Flag; //发生中断的标志
 extern int rocker_x;//摇杆X坐标
 extern int rocker_y;//摇杆Y坐标
+extern float g_fGyroAngleSpeed;//陀螺仪角速度
+extern float g_fCarAngle;//小车倾角
 
 /* USER CODE END PV */
 
@@ -75,6 +78,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -98,23 +102,34 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM2_Init();
   MX_USART3_UART_Init();
-  MX_TIM3_Init();
+  MX_TIM4_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-	Set_Motor_Speed(500,Right);
 	MPU_Init();
 	HAL_UART_Receive_IT(&huart3, (uint8_t *)&mesg, 1);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
+
+
+	HAL_TIM_Encoder_Start(&htim2,TIM_CHANNEL_1);
+	HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_1);
+	HAL_TIM_Encoder_Start(&htim2,TIM_CHANNEL_2);	
+	HAL_TIM_Encoder_Start(&htim4,TIM_CHANNEL_2);
+	__HAL_TIM_SET_COUNTER(&htim2,30000);
+	__HAL_TIM_SET_COUNTER(&htim4,30000);
+
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
-		
-		/*HAL_GPIO_WritePin(GPIOB, AIN1_Pin, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOB, AIN2_Pin, GPIO_PIN_SET);*/
-		
+  {	
+//		int PWM=Balance_Up(g_fCarAngle,g_fGyroAngleSpeed);
+//		Set_Motor_Speed(PWM,Right);
+//		Set_Motor_Speed(PWM,Left);
     /* USER CODE END WHILE */
-
+		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

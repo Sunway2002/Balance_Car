@@ -32,7 +32,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "oled.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -58,14 +58,16 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define DC_Pin GPIO_PIN_15
+#define DC_GPIO_Port GPIOC
 #define M1A_Pin GPIO_PIN_0
 #define M1A_GPIO_Port GPIOA
 #define M1B_Pin GPIO_PIN_1
 #define M1B_GPIO_Port GPIOA
-#define PWMA_Pin GPIO_PIN_2
-#define PWMA_GPIO_Port GPIOA
-#define PWMB_Pin GPIO_PIN_3
-#define PWMB_GPIO_Port GPIOA
+#define CLK_Pin GPIO_PIN_5
+#define CLK_GPIO_Port GPIOA
+#define MOSI_Pin GPIO_PIN_7
+#define MOSI_GPIO_Port GPIOA
 #define TX_Pin GPIO_PIN_10
 #define TX_GPIO_Port GPIOB
 #define RX_Pin GPIO_PIN_11
@@ -78,6 +80,14 @@ void Error_Handler(void);
 #define AIN1_GPIO_Port GPIOB
 #define AIN2_Pin GPIO_PIN_15
 #define AIN2_GPIO_Port GPIOB
+#define PWMA_Pin GPIO_PIN_10
+#define PWMA_GPIO_Port GPIOA
+#define PWMB_Pin GPIO_PIN_11
+#define PWMB_GPIO_Port GPIOA
+#define M2A_Pin GPIO_PIN_6
+#define M2A_GPIO_Port GPIOB
+#define M2B_Pin GPIO_PIN_7
+#define M2B_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

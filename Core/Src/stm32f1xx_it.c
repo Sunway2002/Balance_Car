@@ -21,6 +21,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_it.h"
+#include "pid.h"
+#include "motor.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -49,6 +51,15 @@ uint8_t RX_Flag; //发生中断的标志
 int rocker_x;
 int rocker_y;
 int count=0;
+int enc1=0;
+int enc2=0;
+int Left_Speed=0;
+int Right_Speed=0;
+int Up_PWM=0;
+int Speed_PWM=0;
+int Sum_PWM=0;
+extern float g_fGyroAngleSpeed;//陀螺仪角速度
+extern float g_fCarAngle;//小车倾角
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -62,7 +73,8 @@ int count=0;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim4;
 extern UART_HandleTypeDef huart3;
 /* USER CODE BEGIN EV */
 
@@ -195,12 +207,34 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
-	if(count>5){
-	GetMpuData();
-	AngleCalculate();
-	count=0;
-	}
 	count++;
+	if(count>=5){
+	count=0;
+	enc1=TIM2->CNT;
+	enc2=TIM4->CNT;
+	Left_Speed=(enc1-30000)/5;
+	Right_Speed=(30000-enc2)/5;
+	__HAL_TIM_SET_COUNTER(&htim2,30000);
+	__HAL_TIM_SET_COUNTER(&htim4,30000);
+	}else if(count==1){
+		GetMpuData();
+		AngleCalculate();		
+	}else if(count==2){
+		Up_PWM=Balance_Up(g_fCarAngle,g_fGyroAngleSpeed);
+	}else if(count==3){
+		Speed_PWM=Balance_Speed(Left_Speed,Right_Speed);
+	}else if(count==4){
+		Sum_PWM=Up_PWM+0*Speed_PWM;
+		if(Sum_PWM>999)Sum_PWM=999;
+		if(Sum_PWM<-999)Sum_PWM=-999;
+		Set_Motor_Speed(Sum_PWM,Right);
+		Set_Motor_Speed(Sum_PWM,Left);
+	}
+//		GetMpuData();
+//		AngleCalculate();
+//		Up_PWM=Balance_Up(g_fCarAngle,g_fGyroAngleSpeed);
+//		Set_Motor_Speed(Up_PWM,Right);
+//		Set_Motor_Speed(Up_PWM,Left);
   /* USER CODE END SysTick_IRQn 1 */
 }
 
@@ -212,19 +246,31 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles TIM3 global interrupt.
+  * @brief This function handles TIM2 global interrupt.
   */
-void TIM3_IRQHandler(void)
+void TIM2_IRQHandler(void)
 {
-  /* USER CODE BEGIN TIM3_IRQn 0 */
+  /* USER CODE BEGIN TIM2_IRQn 0 */
 
-  /* USER CODE END TIM3_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim3);
-  /* USER CODE BEGIN TIM3_IRQn 1 */
-	GetMpuData();
-	AngleCalculate();
-	count++;
-  /* USER CODE END TIM3_IRQn 1 */
+  /* USER CODE END TIM2_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim2);
+  /* USER CODE BEGIN TIM2_IRQn 1 */
+
+  /* USER CODE END TIM2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM4 global interrupt.
+  */
+void TIM4_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM4_IRQn 0 */
+
+  /* USER CODE END TIM4_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim4);
+  /* USER CODE BEGIN TIM4_IRQn 1 */
+
+  /* USER CODE END TIM4_IRQn 1 */
 }
 
 /**

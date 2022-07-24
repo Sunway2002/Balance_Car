@@ -62,18 +62,17 @@ void Set_Motor_Speed(int speed, int side)
 		d = Backward;
 		speed = -speed;
 	}
-	
 	if(side == Left)
 	{
 		Direction(d,Left);
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_3, speed);
-		HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, speed);
+		HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
 	}
 	else if(side == Right)
 	{
 		Direction(d,Right);
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_4, speed);
-		HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
+		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_4, speed);
+		HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 	}
 }
 
